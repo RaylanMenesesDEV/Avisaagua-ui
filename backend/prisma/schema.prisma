@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -10,4 +8,100 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+enum TipoUsuario {
+  CIDADAO
+  ADMINISTRADOR
+}
+
+enum TipoServico {
+  AGUA
+  ENERGIA
+  LIXO
+}
+
+enum CategoriaAviso {
+  AGUA
+  ENERGIA
+  LIXO
+}
+
+enum StatusAviso {
+  ATIVO
+  ENCERRADO
+}
+
+enum StatusFeedback {
+  PENDENTE
+  RESPONDIDO
+}
+
+model Usuario {
+  id           Int         @id @default(autoincrement())
+  nome         String
+  cpf          String      @unique
+  email        String      @unique
+  senha        String
+  tipoUsuario  TipoUsuario @default(CIDADAO)
+  criadoEm     DateTime    @default(now())
+  atualizadoEm DateTime    @updatedAt
+
+  feedbacks Feedback[]
+}
+
+model Orgao {
+  id           Int         @id @default(autoincrement())
+  nome         String
+  tipoServico  TipoServico
+  telefone     String
+  email        String
+  endereco     String
+  criadoEm     DateTime    @default(now())
+  atualizadoEm DateTime    @updatedAt
+
+  avisos Aviso[]
+}
+
+model Aviso {
+  id                  Int            @id @default(autoincrement())
+  titulo              String
+  descricao           String
+  categoria           CategoriaAviso
+  dataPublicacao      DateTime       @default(now())
+  dataPrevistaRetorno DateTime?
+  status              StatusAviso    @default(ATIVO)
+
+  orgaoId Int
+  orgao   Orgao @relation(fields: [orgaoId], references: [id])
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  notificacoes Notificacao[]
+}
+
+model Feedback {
+  id        Int            @id @default(autoincrement())
+  mensagem  String
+  dataEnvio DateTime       @default(now())
+  status    StatusFeedback @default(PENDENTE)
+
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Notificacao {
+  id        Int      @id @default(autoincrement())
+  mensagem  String
+  dataEnvio DateTime @default(now())
+  tipo      String
+
+  avisoId Int
+  aviso   Aviso @relation(fields: [avisoId], references: [id])
+
+  criadoEm DateTime @default(now())
 }
