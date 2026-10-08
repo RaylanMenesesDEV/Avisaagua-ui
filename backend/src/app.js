@@ -1,6 +1,9 @@
+
 import express from "express";
+
 import usuariosRoutes from "./routes/usuarios.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import orgaosRoutes from "./routes/orgaos.routes.js";
 
 const app = express();
 
@@ -18,5 +21,8 @@ app.use("/api/usuarios", usuariosRoutes);
 
 // Rota de autenticação
 app.use("/api/auth", authRoutes);
+
+// Rota de órgãos públicos
+app.use("/api/orgaos", orgaosRoutes);
 
 export default app;
