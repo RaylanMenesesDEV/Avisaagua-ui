@@ -1,19 +1,22 @@
 import express from "express";
 import usuariosRoutes from "./routes/usuarios.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
-// Permite receber dados em formato JSON
 app.use(express.json());
 
-// Rota inicial para verificar o funcionamento da API
+// Rota principal
 app.get("/", (req, res) => {
   return res.status(200).json({
     message: "API AvisaÁgua funcionando!",
   });
 });
 
-// Rotas de usuários
+// Rota de cadastro de usuários
 app.use("/api/usuarios", usuariosRoutes);
+
+// Rota de autenticação
+app.use("/api/auth", authRoutes);
 
 export default app;
