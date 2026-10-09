@@ -7,6 +7,8 @@ import orgaosRoutes from "./routes/orgaos.routes.js";
 
 import avisosRoutes from "./routes/avisos.routes.js";
 import feedbacksRoutes from "./routes/feedbacks.routes.js";
+import notificacoesRoutes from "./routes/notificacoes.routes.js";
+
 
 const app = express();
 
@@ -33,5 +35,8 @@ app.use("/api/avisos", avisosRoutes);
 
 // Rota de feedbacks
 app.use("/api/feedbacks", feedbacksRoutes);
+
+// Rota de notificações
+app.use("/api/notificacoes", notificacoesRoutes);
 
 export default app;
