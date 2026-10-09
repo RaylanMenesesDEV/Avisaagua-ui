@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.routes.js";
 import orgaosRoutes from "./routes/orgaos.routes.js";
 
 import avisosRoutes from "./routes/avisos.routes.js";
+import feedbacksRoutes from "./routes/feedbacks.routes.js";
 
 const app = express();
 
@@ -29,5 +30,8 @@ app.use("/api/orgaos", orgaosRoutes);
 
 // Rota pública de avisos
 app.use("/api/avisos", avisosRoutes);
+
+// Rota de feedbacks
+app.use("/api/feedbacks", feedbacksRoutes);
 
 export default app;
