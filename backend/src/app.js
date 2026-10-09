@@ -5,6 +5,8 @@ import usuariosRoutes from "./routes/usuarios.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import orgaosRoutes from "./routes/orgaos.routes.js";
 
+import avisosRoutes from "./routes/avisos.routes.js";
+
 const app = express();
 
 app.use(express.json());
@@ -24,5 +26,8 @@ app.use("/api/auth", authRoutes);
 
 // Rota de órgãos públicos
 app.use("/api/orgaos", orgaosRoutes);
+
+// Rota pública de avisos
+app.use("/api/avisos", avisosRoutes);
 
 export default app;
