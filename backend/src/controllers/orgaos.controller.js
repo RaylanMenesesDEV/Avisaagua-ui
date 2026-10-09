@@ -50,6 +50,16 @@ export async function criarOrgao(req, res) {
       });
     }
 
+    // Validar os tipos de serviço permitidos
+    const tiposPermitidos = ["AGUA", "ENERGIA", "LIXO"];
+
+    if (!tiposPermitidos.includes(tipoServico.trim())) {
+      return res.status(400).json({
+        mensagem: "Tipo de serviço inválido.",
+        tiposPermitidos,
+      });
+    }
+
     const novoOrgao = await cadastrarOrgao({
       nome: nome.trim(),
       tipoServico: tipoServico.trim(),
