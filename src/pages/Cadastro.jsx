@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import AppHeader from "../components/AppHeader";
 import InputField from "../components/InputField";
+import { cadastrarUsuario } from "../services/usuarios.service";
 
 function Cadastro() {
   const navigate = useNavigate();
@@ -21,54 +22,45 @@ function Cadastro() {
 
   const [erro, setErro] = useState("");
 
-  function cadastrar(event) {
-    event.preventDefault();
+  async function cadastrar(event) {
+  event.preventDefault();
 
-    setErro("");
+  setErro("");
 
-    if (!nome || !cpf || !email || !senha || !confirmarSenha) {
-      setErro("Preencha todos os campos.");
-      return;
-    }
+  if (!nome || !cpf || !email || !senha || !confirmarSenha) {
+    setErro("Preencha todos os campos.");
+    return;
+  }
 
-    if (senha.length < 6) {
-      setErro("A senha deve possuir pelo menos 6 caracteres.");
-      return;
-    }
+  if (senha.length < 6) {
+    setErro("A senha deve possuir pelo menos 6 caracteres.");
+    return;
+  }
 
-    if (senha !== confirmarSenha) {
-      setErro("As senhas não coincidem.");
-      return;
-    }
+  if (senha !== confirmarSenha) {
+    setErro("As senhas não coincidem.");
+    return;
+  }
 
-    const usuarioExistente = localStorage.getItem("avisaagua_usuario");
-
-    if (usuarioExistente) {
-      const usuario = JSON.parse(usuarioExistente);
-
-      if (usuario.email === email || usuario.cpf === cpf) {
-        setErro("E-mail ou CPF já cadastrado no sistema.");
-        return;
-      }
-    }
-
-    const novoUsuario = {
-      id: Date.now(),
+  try {
+    const dadosUsuario = {
       nome,
       cpf,
       email,
       senha,
+      confirmarSenha,
     };
 
-    localStorage.setItem(
-      "avisaagua_usuario",
-      JSON.stringify(novoUsuario)
-    );
+    await cadastrarUsuario(dadosUsuario);
 
     alert("Cadastro realizado com sucesso!");
 
     navigate("/");
+
+  } catch (error) {
+    setErro(error.message);
   }
+}
 
   return (
     <section className="page">

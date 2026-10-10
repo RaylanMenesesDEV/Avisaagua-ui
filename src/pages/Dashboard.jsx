@@ -75,9 +75,11 @@ if (ativo) {
   );
 
   function sair() {
-    localStorage.removeItem("avisaagua_usuario_logado");
-    navigate("/");
-  }
+  localStorage.removeItem("avisaagua_usuario_logado");
+  localStorage.removeItem("avisaagua_token");
+
+  navigate("/");
+}
 
   return (
     <section className="page dashboard-page">

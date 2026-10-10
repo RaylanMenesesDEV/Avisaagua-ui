@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import AppHeader from "../components/AppHeader";
 import InputField from "../components/InputField";
+import { fazerLoginAPI } from "../services/auth.service";
 
 function Login() {
   const navigate = useNavigate();
@@ -11,37 +12,32 @@ function Login() {
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
 
-  function fazerLogin(event) {
-    event.preventDefault();
+  async function fazerLogin(event) {
+  event.preventDefault();
 
-    setErro("");
+  setErro("");
 
-    if (!email || !senha) {
-      setErro("Preencha o e-mail e a senha.");
-      return;
-    }
-
-    const usuarioSalvo = localStorage.getItem("avisaagua_usuario");
-
-    if (!usuarioSalvo) {
-      setErro("Usuário não cadastrado. Crie uma conta primeiro.");
-      return;
-    }
-
-    const usuario = JSON.parse(usuarioSalvo);
-
-    if (usuario.email !== email || usuario.senha !== senha) {
-      setErro("E-mail ou senha inválidos.");
-      return;
-    }
-
-    localStorage.setItem(
-      "avisaagua_usuario_logado",
-      JSON.stringify(usuario)
-    );
-
-    navigate("/dashboard");
+  if (!email || !senha) {
+    setErro("Preencha o e-mail e a senha.");
+    return;
   }
+
+  try {
+  const dados = await fazerLoginAPI(email, senha);
+
+  localStorage.setItem("avisaagua_token", dados.token);
+
+  localStorage.setItem(
+    "avisaagua_usuario_logado",
+    JSON.stringify(dados.usuario)
+  );
+
+  navigate("/dashboard");
+
+} catch (error) {
+  setErro(error.message);
+}
+}
 
   return (
     <section className="page">
