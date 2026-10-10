@@ -1,5 +1,6 @@
 
 import express from "express";
+import cors from "cors";
 
 import usuariosRoutes from "./routes/usuarios.routes.js";
 import authRoutes from "./routes/auth.routes.js";
@@ -12,7 +13,16 @@ import notificacoesRoutes from "./routes/notificacoes.routes.js";
 
 const app = express();
 
+// Permitir requisições do frontend React
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
+
+// Permitir o recebimento de dados JSON
 app.use(express.json());
+
 
 // Rota principal
 app.get("/", (req, res) => {
