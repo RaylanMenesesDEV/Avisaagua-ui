@@ -36,6 +36,12 @@ enum StatusFeedback {
   RESPONDIDO
 }
 
+enum TipoFeedback {
+  PROBLEMA
+  SUGESTAO
+  ELOGIO
+}
+
 model Usuario {
   id           Int         @id @default(autoincrement())
   nome         String
@@ -83,6 +89,7 @@ model Aviso {
 model Feedback {
   id        Int            @id @default(autoincrement())
   mensagem  String
+  tipo      TipoFeedback   @default(PROBLEMA)
   dataEnvio DateTime       @default(now())
   status    StatusFeedback @default(PENDENTE)
 

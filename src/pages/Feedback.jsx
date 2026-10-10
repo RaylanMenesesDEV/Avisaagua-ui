@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AlertTriangle, Lightbulb, ThumbsUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { enviarFeedbackAPI } from "../services/feedbacks.service";
 
 import AppHeader from "../components/AppHeader";
 
@@ -26,46 +27,40 @@ function Feedback() {
     },
   ];
 
-  function enviarFeedback(event) {
-    event.preventDefault();
+  async function enviarFeedback(event) {
+  event.preventDefault();
 
-    setErro("");
+  setErro("");
 
-    if (!mensagem.trim()) {
-      setErro("Digite uma mensagem antes de enviar.");
-      return;
-    }
+  if (!mensagem.trim()) {
+    setErro("Digite uma mensagem antes de enviar.");
+    return;
+  }
 
-    const usuario = JSON.parse(
-      localStorage.getItem("avisaagua_usuario_logado")
-    );
+  // Converter o tipo selecionado para o formato da API
+  const tiposAPI = {
+    Problema: "PROBLEMA",
+    Sugestão: "SUGESTAO",
+    Elogio: "ELOGIO",
+  };
 
-    const feedbacksSalvos =
-      JSON.parse(
-        localStorage.getItem("avisaagua_feedbacks")
-      ) || [];
+  const tipoSelecionado = tiposAPI[tipo];
 
-    const novoFeedback = {
-      id: Date.now(),
-      usuarioId: usuario.id,
-      usuario: usuario.nome,
-      tipo,
-      mensagem,
-      data: new Date().toISOString(),
-      status: "ABERTO",
-    };
-
-    feedbacksSalvos.push(novoFeedback);
-
-    localStorage.setItem(
-      "avisaagua_feedbacks",
-      JSON.stringify(feedbacksSalvos)
+  try {
+    await enviarFeedbackAPI(
+      mensagem.trim(),
+      tipoSelecionado
     );
 
     alert("Feedback enviado com sucesso!");
 
+    setMensagem("");
+
     navigate("/dashboard");
+  } catch (error) {
+    setErro(error.message);
   }
+}
 
   return (
     <section className="page">

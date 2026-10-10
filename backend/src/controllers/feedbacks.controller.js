@@ -9,9 +9,8 @@ import {
 // Cadastrar feedback de um usuário autenticado
 export async function criarFeedback(req, res) {
   try {
-    const { mensagem } = req.body ?? {};
+    const { mensagem, tipo } = req.body ?? {};
 
-    // Obter o ID do usuário autenticado pelo JWT
     const usuarioId = req.usuario?.id;
 
     // Validar a mensagem
@@ -24,17 +23,27 @@ export async function criarFeedback(req, res) {
       });
     }
 
-    // Verificar se o usuário está autenticado
+    // Validar o tipo de feedback
+    const tiposPermitidos = ["PROBLEMA", "SUGESTAO", "ELOGIO"];
+
+    if (!tiposPermitidos.includes(tipo)) {
+      return res.status(400).json({
+        mensagem: "Tipo de feedback inválido.",
+      });
+    }
+
+    // Verificar autenticação
     if (!Number.isSafeInteger(usuarioId) || usuarioId <= 0) {
       return res.status(401).json({
         mensagem: "Usuário não autenticado.",
       });
     }
 
-    // Cadastrar feedback no banco de dados
+    // Cadastrar feedback no PostgreSQL
     const novoFeedback = await cadastrarFeedback(
       mensagem.trim(),
-      usuarioId
+      usuarioId,
+      tipo
     );
 
     return res.status(201).json({
@@ -42,7 +51,6 @@ export async function criarFeedback(req, res) {
       feedback: novoFeedback,
     });
   } catch (error) {
-    // Usuário do token não existe mais no banco
     if (error.code === "P2003") {
       return res.status(401).json({
         mensagem: "Usuário não encontrado ou inválido.",
@@ -50,6 +58,9 @@ export async function criarFeedback(req, res) {
     }
 
     console.error("Erro ao cadastrar feedback:", error);
+    console.error("Nome do erro:", error.name);
+    console.error("Código do erro:", error.code);
+    console.error("Mensagem do erro:", error.message);
 
     return res.status(500).json({
       mensagem: "Erro interno ao cadastrar feedback.",

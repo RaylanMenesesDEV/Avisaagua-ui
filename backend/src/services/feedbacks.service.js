@@ -2,15 +2,17 @@
 import prisma from "../lib/prisma.js";
 
 // Cadastrar um novo feedback
-export async function cadastrarFeedback(mensagem, usuarioId) {
+export async function cadastrarFeedback(mensagem, usuarioId, tipo) {
   return prisma.feedback.create({
     data: {
       mensagem,
       usuarioId,
+      tipo,
     },
     select: {
       id: true,
       mensagem: true,
+      tipo: true,
       dataEnvio: true,
       status: true,
       usuarioId: true,
@@ -29,6 +31,7 @@ export async function listarFeedbacksDoUsuario(usuarioId) {
     select: {
       id: true,
       mensagem: true,
+      tipo: true,
       dataEnvio: true,
       status: true,
       usuarioId: true,
@@ -47,6 +50,7 @@ export async function listarTodosFeedbacks() {
     select: {
       id: true,
       mensagem: true,
+      tipo: true,
       dataEnvio: true,
       status: true,
       usuarioId: true,
@@ -77,6 +81,7 @@ export async function responderFeedback(id) {
     select: {
       id: true,
       mensagem: true,
+      tipo: true,
       dataEnvio: true,
       status: true,
       usuarioId: true,
