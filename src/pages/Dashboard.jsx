@@ -25,6 +25,15 @@ function Dashboard() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
 
+  // Categoria selecionada: Água, Energia ou Lixo
+  const [categoriaSelecionada, setCategoriaSelecionada] =
+    useState("AGUA");
+
+  // Filtrar avisos ativos pela categoria selecionada
+  const avisosFiltrados = avisos.filter(
+    (aviso) => aviso.categoria === categoriaSelecionada
+  );
+
   // Estados das notificações
   const [notificacoes, setNotificacoes] = useState([]);
   const [carregandoNotificacoes, setCarregandoNotificacoes] =
@@ -143,28 +152,58 @@ function Dashboard() {
           </span>
 
           <div className="categories">
-            <button className="category active">
+            {/* Água */}
+            <button
+              type="button"
+              className={`category ${
+                categoriaSelecionada === "AGUA"
+                  ? "active"
+                  : ""
+              }`}
+              onClick={() => setCategoriaSelecionada("AGUA")}
+              aria-pressed={categoriaSelecionada === "AGUA"}
+            >
               <Droplets size={25} />
               <span>Água</span>
             </button>
 
-            <button className="category energy">
+            {/* Energia */}
+            <button
+              type="button"
+              className={`category energy ${
+                categoriaSelecionada === "ENERGIA"
+                  ? "active"
+                  : ""
+              }`}
+              onClick={() => setCategoriaSelecionada("ENERGIA")}
+              aria-pressed={categoriaSelecionada === "ENERGIA"}
+            >
               <Zap size={25} />
               <span>Energia</span>
             </button>
 
-            <button className="category trash">
+            {/* Lixo */}
+            <button
+              type="button"
+              className={`category trash ${
+                categoriaSelecionada === "LIXO"
+                  ? "active"
+                  : ""
+              }`}
+              onClick={() => setCategoriaSelecionada("LIXO")}
+              aria-pressed={categoriaSelecionada === "LIXO"}
+            >
               <Trash2 size={25} />
               <span>Lixo</span>
             </button>
           </div>
         </section>
 
-        {/* Avisos ativos */}
+        {/* Avisos ativos filtrados */}
         <section className="notices-section">
           <div className="section-title">
             <span>AVISOS ATIVOS</span>
-            <strong>{avisos.length}</strong>
+            <strong>{avisosFiltrados.length}</strong>
           </div>
 
           <div className="notices-list">
@@ -175,10 +214,12 @@ function Dashboard() {
                 Não foi possível carregar os avisos.
                 Tente novamente mais tarde.
               </p>
-            ) : avisos.length === 0 ? (
-              <p>Nenhum aviso ativo no momento.</p>
+            ) : avisosFiltrados.length === 0 ? (
+              <p>
+                Nenhum aviso ativo nesta categoria no momento.
+              </p>
             ) : (
-              avisos.map((aviso) => (
+              avisosFiltrados.map((aviso) => (
                 <NoticeCard
                   key={aviso.id}
                   aviso={aviso}
@@ -217,7 +258,7 @@ function Dashboard() {
           </div>
         </section>
 
-        {/* Botão de feedback */}
+        {/* Enviar feedback */}
         <button
           className="feedback-button"
           onClick={() => navigate("/feedback")}
@@ -226,7 +267,7 @@ function Dashboard() {
           Enviar Feedback
         </button>
 
-        {/* Botão de sair */}
+        {/* Sair da conta */}
         <button
           className="logout-button"
           onClick={sair}
