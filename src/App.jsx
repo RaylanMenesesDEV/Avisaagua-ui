@@ -1,12 +1,23 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { verificarAutenticacao } from "./services/auth.service";
 
+import { useEffect, useState } from "react";
+
+import {
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
+// Páginas do AvisaÁgua
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 import Dashboard from "./pages/Dashboard";
 import Feedback from "./pages/Feedback";
+import DetalhesAviso from "./pages/DetalhesAviso";
 
+// Serviço de autenticação
+import { verificarAutenticacao } from "./services/auth.service";
+
+// Componente responsável por proteger as rotas
 function RotaProtegida({ children }) {
   const [autenticado, setAutenticado] = useState(null);
 
@@ -17,13 +28,13 @@ function RotaProtegida({ children }) {
       const valido = await verificarAutenticacao();
 
       if (ativo) {
-  if (!valido) {
-    localStorage.removeItem("avisaagua_token");
-    localStorage.removeItem("avisaagua_usuario_logado");
-  }
+        if (!valido) {
+          localStorage.removeItem("avisaagua_token");
+          localStorage.removeItem("avisaagua_usuario_logado");
+        }
 
-  setAutenticado(valido);
-}
+        setAutenticado(valido);
+      }
     }
 
     validarSessao();
@@ -38,39 +49,63 @@ function RotaProtegida({ children }) {
   }
 
   if (!autenticado) {
-  return <Navigate to="/" replace />;
-}
+    return <Navigate to="/" replace />;
+  }
 
   return children;
 }
 
 function App() {
   return (
-      <div className="app-background">
-        <main className="app-container">
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/cadastro" element={<Cadastro />} />
-            <Route
-              path="/dashboard"
-              element={
-                <RotaProtegida>
-                  <Dashboard />
-                </RotaProtegida>
-              }
-            />
-            <Route
-              path="/feedback"
-              element={
-                <RotaProtegida>
-                  <Feedback />
-                </RotaProtegida>
-              }
-            />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-      </div>
+    <Routes>
+      {/* Página de login */}
+      <Route
+        path="/"
+        element={<Login />}
+      />
+
+      {/* Página de cadastro */}
+      <Route
+        path="/cadastro"
+        element={<Cadastro />}
+      />
+
+      {/* Dashboard protegido */}
+      <Route
+        path="/dashboard"
+        element={
+          <RotaProtegida>
+            <Dashboard />
+          </RotaProtegida>
+        }
+      />
+
+      {/* Feedback protegido */}
+      <Route
+        path="/feedback"
+        element={
+          <RotaProtegida>
+            <Feedback />
+          </RotaProtegida>
+        }
+      />
+
+      {/* Detalhes de um aviso público */}
+      <Route
+        path="/avisos/:id"
+        element={
+          <RotaProtegida>
+            <DetalhesAviso />
+          </RotaProtegida>
+        }
+      />
+
+      {/* Redirecionar rotas inexistentes */}
+      <Route
+        path="*"
+        element={<Navigate to="/" replace />}
+      />
+    </Routes>
   );
 }
 

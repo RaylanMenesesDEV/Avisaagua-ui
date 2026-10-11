@@ -1,6 +1,18 @@
+
+import { useNavigate } from "react-router-dom";
+
 function NoticeCard({ aviso }) {
+  const navigate = useNavigate();
+
+  function abrirDetalhes() {
+    navigate(`/avisos/${aviso.id}`);
+  }
+
   return (
-    <article className="notice-card">
+    <article
+      className="notice-card"
+      onClick={abrirDetalhes}
+    >
       <div className={`notice-dot ${aviso.tipo}`} />
 
       <div className="notice-info">

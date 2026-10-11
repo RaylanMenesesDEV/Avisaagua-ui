@@ -675,3 +675,106 @@ button {
     min-height: 100vh;
   }
 }
+
+/* =========================
+   MELHORIAS DE RESPONSIVIDADE
+========================= */
+
+/* Melhorar a leitura dos avisos */
+.notice-info h3 {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.notice-info p {
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* Melhorar os cartões */
+.notice-card {
+  padding: 14px;
+  gap: 12px;
+}
+
+/* Destacar a categoria selecionada */
+.category.energy.active {
+  background: #d59b00;
+  color: white;
+}
+
+.category.trash.active {
+  background: #13a85b;
+  color: white;
+}
+
+/* Facilitar a identificação dos cartões clicáveis */
+.notices-list .notice-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.notices-list .notice-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(20, 30, 50, 0.12);
+}
+
+/* Ajustes para celulares */
+@media (max-width: 500px) {
+  .dashboard-content {
+    padding: 20px 16px;
+  }
+
+  .categories {
+    gap: 8px;
+  }
+
+  .notice-info h3 {
+    font-size: 12px;
+  }
+
+  .notice-info p {
+    font-size: 10px;
+  }
+}
+
+
+/* =========================
+   DETALHES DO AVISO
+========================= */
+
+.detalhes-aviso-card {
+  display: block;
+  padding: 22px 18px;
+  border-radius: 16px;
+}
+
+.detalhes-aviso-card .notice-info h2 {
+  color: #26344c;
+  font-size: 21px;
+  line-height: 1.3;
+  margin-bottom: 20px;
+  overflow-wrap: anywhere;
+}
+
+.detalhes-aviso-card .notice-info p {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+.detalhes-aviso-card .notice-info strong {
+  color: #334155;
+  font-weight: 700;
+}
+
+@media (max-width: 500px) {
+  .detalhes-aviso-card {
+    padding: 20px 16px;
+  }
+
+  .detalhes-aviso-card .notice-info h2 {
+    font-size: 19px;
+  }
+}
