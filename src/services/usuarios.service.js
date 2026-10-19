@@ -1,23 +1,17 @@
-const API_URL = "http://localhost:3000/api";
 
+import api from "./api";
+
+// Cadastrar um novo cidadão no AvisaÁgua
 export async function cadastrarUsuario(dadosUsuario) {
-  const resposta = await fetch(`${API_URL}/usuarios`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(dadosUsuario),
-  });
+  try {
+    const resposta = await api.post("/usuarios", dadosUsuario);
 
-  const dados = await resposta.json();
-
-  if (!resposta.ok) {
+    return resposta.data;
+  } catch (error) {
     throw new Error(
-      dados.mensagem ||
-      dados.erro ||
+      error.response?.data?.mensagem ||
+      error.response?.data?.erro ||
       "Não foi possível realizar o cadastro."
     );
   }
-
-  return dados;
 }

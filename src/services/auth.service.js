@@ -1,25 +1,26 @@
-const API_URL = "http://localhost:3000/api";
 
+import api from "./api";
+
+// Realizar login utilizando a API
 export async function fazerLoginAPI(email, senha) {
-  const resposta = await fetch(`${API_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  try {
+    const resposta = await api.post("/auth/login", {
       email,
       senha,
-    }),
-  });
+    });
 
-  const dados = await resposta.json();
+    return resposta.data;
+  } catch (error) {
+    const mensagem =
+      error.response?.data?.mensagem ||
+      error.response?.data?.erro ||
+      "Não foi possível realizar o login. Verifique suas credenciais ou tente novamente.";
 
-  if (!resposta.ok) {
-    throw new Error(dados.mensagem || dados.erro || "E-mail ou senha inválidos.");
+    throw new Error(mensagem);
   }
-
-  return dados;
 }
+
+// Verificar se o usuário continua autenticado
 export async function verificarAutenticacao() {
   const token = localStorage.getItem("avisaagua_token");
 
@@ -28,16 +29,11 @@ export async function verificarAutenticacao() {
   }
 
   try {
-    const resposta = await fetch(`${API_URL}/auth/me`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    await api.get("/auth/me");
 
-    return resposta.ok;
+    return true;
   } catch (error) {
-    console.error("Erro ao verificar autenticação:", error);
+    console.error("Erro ao verificar autenticação:", error.message);
     return false;
   }
 }

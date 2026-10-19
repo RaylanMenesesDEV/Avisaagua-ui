@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
@@ -11,33 +12,41 @@ function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
   async function fazerLogin(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  setErro("");
+    if (carregando) return;
 
-  if (!email || !senha) {
-    setErro("Preencha o e-mail e a senha.");
-    return;
+    setErro("");
+
+    if (!email || !senha) {
+      setErro("Preencha o e-mail e a senha.");
+      return;
+    }
+
+    setCarregando(true);
+
+    try {
+      const dados = await fazerLoginAPI(email, senha);
+
+      localStorage.setItem("avisaagua_token", dados.token);
+
+      localStorage.setItem(
+        "avisaagua_usuario_logado",
+        JSON.stringify(dados.usuario)
+      );
+
+      navigate("/dashboard");
+    } catch (error) {
+      setErro(
+        error.message || "Não foi possível realizar o login."
+      );
+    } finally {
+      setCarregando(false);
+    }
   }
-
-  try {
-  const dados = await fazerLoginAPI(email, senha);
-
-  localStorage.setItem("avisaagua_token", dados.token);
-
-  localStorage.setItem(
-    "avisaagua_usuario_logado",
-    JSON.stringify(dados.usuario)
-  );
-
-  navigate("/dashboard");
-
-} catch (error) {
-  setErro(error.message);
-}
-}
 
   return (
     <section className="page">
@@ -49,7 +58,6 @@ function Login() {
 
       <div className="page-content">
         <form onSubmit={fazerLogin} className="form">
-
           <InputField
             name="email"
             type="email"
@@ -68,17 +76,28 @@ function Login() {
             icon={Lock}
           />
 
-          {erro && <div className="error-message">{erro}</div>}
+          {erro && (
+            <div className="error-message" role="alert">
+              {erro}
+            </div>
+          )}
 
-          <button className="primary-button" type="submit">
-            Entrar
+          <button
+            className="primary-button"
+            type="submit"
+            disabled={carregando}
+            aria-busy={carregando}
+          >
+            {carregando ? "Entrando..." : "Entrar"}
           </button>
 
           <button
             type="button"
             className="link-button"
             onClick={() =>
-              alert("A recuperação de senha será implementada futuramente.")
+              alert(
+                "A recuperação de senha será implementada futuramente."
+              )
             }
           >
             Esqueci a Senha
@@ -95,7 +114,6 @@ function Login() {
           >
             Criar uma conta nova
           </button>
-
         </form>
       </div>
     </section>

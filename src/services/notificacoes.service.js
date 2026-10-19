@@ -1,16 +1,16 @@
-const API_URL = "http://localhost:3000/api";
+
+import api from "./api";
 
 // Consultar todas as notificações cadastradas
 export async function buscarNotificacoes() {
-  const resposta = await fetch(`${API_URL}/notificacoes`);
+  try {
+    const resposta = await api.get("/notificacoes");
 
-  if (!resposta.ok) {
+    return resposta.data.notificacoes;
+  } catch (error) {
     throw new Error(
+      error.response?.data?.mensagem ||
       "Não foi possível consultar as notificações."
     );
   }
-
-  const dados = await resposta.json();
-
-  return dados.notificacoes;
 }

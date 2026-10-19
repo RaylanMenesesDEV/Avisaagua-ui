@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   User,
@@ -21,46 +22,54 @@ function Cadastro() {
   const [confirmarSenha, setConfirmarSenha] = useState("");
 
   const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
   async function cadastrar(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  setErro("");
+    if (carregando) return;
 
-  if (!nome || !cpf || !email || !senha || !confirmarSenha) {
-    setErro("Preencha todos os campos.");
-    return;
+    setErro("");
+
+    if (!nome || !cpf || !email || !senha || !confirmarSenha) {
+      setErro("Preencha todos os campos.");
+      return;
+    }
+
+    if (senha.length < 6) {
+      setErro("A senha deve possuir pelo menos 6 caracteres.");
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
+
+    setCarregando(true);
+
+    try {
+      const dadosUsuario = {
+        nome,
+        cpf,
+        email,
+        senha,
+        confirmarSenha,
+      };
+
+      await cadastrarUsuario(dadosUsuario);
+
+      alert("Cadastro realizado com sucesso!");
+
+      navigate("/");
+    } catch (error) {
+      setErro(
+        error.message || "Não foi possível realizar o cadastro."
+      );
+    } finally {
+      setCarregando(false);
+    }
   }
-
-  if (senha.length < 6) {
-    setErro("A senha deve possuir pelo menos 6 caracteres.");
-    return;
-  }
-
-  if (senha !== confirmarSenha) {
-    setErro("As senhas não coincidem.");
-    return;
-  }
-
-  try {
-    const dadosUsuario = {
-      nome,
-      cpf,
-      email,
-      senha,
-      confirmarSenha,
-    };
-
-    await cadastrarUsuario(dadosUsuario);
-
-    alert("Cadastro realizado com sucesso!");
-
-    navigate("/");
-
-  } catch (error) {
-    setErro(error.message);
-  }
-}
 
   return (
     <section className="page">
@@ -71,7 +80,6 @@ function Cadastro() {
 
       <div className="page-content">
         <form onSubmit={cadastrar} className="form">
-
           <InputField
             name="nome"
             placeholder="Nome completo"
@@ -115,10 +123,19 @@ function Cadastro() {
             icon={Lock}
           />
 
-          {erro && <div className="error-message">{erro}</div>}
+          {erro && (
+            <div className="error-message" role="alert">
+              {erro}
+            </div>
+          )}
 
-          <button className="primary-button" type="submit">
-            Cadastrar
+          <button
+            className="primary-button"
+            type="submit"
+            disabled={carregando}
+            aria-busy={carregando}
+          >
+            {carregando ? "Cadastrando..." : "Cadastrar"}
           </button>
 
           <button
@@ -128,7 +145,6 @@ function Cadastro() {
           >
             Já tenho uma conta — Entrar
           </button>
-
         </form>
       </div>
     </section>
