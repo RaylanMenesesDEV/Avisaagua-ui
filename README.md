@@ -1,4 +1,4 @@
-# AvisaÁgua
+# AvisaÁgua — Frontend
 
 **Sistema de Avisos de Serviços Públicos**
 
@@ -12,6 +12,22 @@ A aplicação permite que cidadãos consultem avisos, acompanhem notificações 
 
 O sistema tem como contexto de aplicação o município de Água Branca, no Piauí.
 
+## Organização dos repositórios
+
+O projeto está dividido em dois repositórios independentes:
+
+**Frontend — Avisaagua-ui**
+
+https://github.com/RaylanMenesesDEV/Avisaagua-ui
+
+Responsável pela interface do usuário, navegação, páginas e comunicação com a API.
+
+**Backend — Avisaagua-api**
+
+https://github.com/RaylanMenesesDEV/Avisaagua-api
+
+Responsável pela autenticação, regras de negócio, endpoints e integração com o banco de dados PostgreSQL.
+
 ## Tecnologias utilizadas
 
 **Frontend**
@@ -22,7 +38,7 @@ O sistema tem como contexto de aplicação o município de Água Branca, no Piau
 - Lucide React
 - HTML e CSS
 
-**Backend**
+**Backend (repositório separado)**
 - Node.js
 - Express
 - Prisma ORM
@@ -57,15 +73,12 @@ O backend possui rotas protegidas para:
 
 **Observação:** as funcionalidades administrativas estão implementadas na API, mas ainda não possuem um painel administrativo próprio no frontend.
 
-## Estrutura do projeto
+## Estrutura dos projetos
+
+**Repositório Avisaagua-ui**
 
 ```text
-avisaagua/
-├── backend/
-│   ├── prisma/
-│   ├── src/
-│   ├── package.json
-│   └── prisma7.config.ts
+Avisaagua-ui/
 ├── public/
 ├── src/
 │   ├── components/
@@ -73,39 +86,57 @@ avisaagua/
 │   └── services/
 ├── index.html
 ├── package.json
+├── vite.config.js
 └── README.md
+```
+
+**Repositório Avisaagua-api**
+
+```text
+Avisaagua-api/
+├── prisma/
+├── src/
+│   ├── controllers/
+│   ├── lib/
+│   ├── middlewares/
+│   ├── routes/
+│   ├── services/
+│   └── utils/
+├── package.json
+├── prisma7.config.ts
+└── test-prisma.js
 ```
 
 ## Requisitos
 
-Para executar o projeto localmente, é necessário ter instalado:
+Para executar o sistema localmente, é necessário:
 
 - Node.js e npm;
 - PostgreSQL;
-- Git, caso deseje clonar o repositório.
-
-Também é necessário criar um banco de dados PostgreSQL e configurar as variáveis de ambiente do backend.
+- Git;
+- Os dois repositórios do AvisaÁgua.
 
 ## Como executar o projeto
 
-### 1. Instalar as dependências do frontend
-
-Na pasta principal do projeto:
+### 1. Clonar os repositórios
 
 ```bash
+git clone https://github.com/RaylanMenesesDEV/Avisaagua-ui.git
+git clone https://github.com/RaylanMenesesDEV/Avisaagua-api.git
+```
+
+Caso sejam privados, será necessário possuir acesso autorizado aos repositórios.
+
+### 2. Configurar o backend
+
+Acesse a pasta da API:
+
+```bash
+cd Avisaagua-api
 npm install
 ```
 
-### 2. Instalar as dependências do backend
-
-```bash
-cd backend
-npm install
-```
-
-### 3. Configurar o banco de dados
-
-Crie o arquivo `backend/.env` com as variáveis necessárias:
+Crie um arquivo `.env` na raiz do backend:
 
 ```env
 DATABASE_URL="postgresql://USUARIO:SENHA@localhost:5432/NOME_DO_BANCO"
@@ -114,72 +145,90 @@ JWT_SECRET="SUBSTITUA_POR_UMA_CHAVE_SECRETA_FORTE"
 
 Substitua os valores de exemplo pelas configurações do seu ambiente.
 
-**Importante:** não publique o arquivo `.env` nem credenciais reais no GitHub.
+**Importante:** nunca publique credenciais reais no GitHub.
 
-### 4. Preparar o Prisma
+### 3. Preparar o banco de dados
 
-Dentro da pasta `backend`, execute:
+Com o PostgreSQL em execução e o banco de dados criado:
 
 ```bash
 npx prisma generate
 npx prisma migrate deploy
 ```
 
-As migrações existentes serão utilizadas para preparar as tabelas do banco de dados.
+### 4. Iniciar o backend
 
-### 5. Iniciar o backend
-
-Ainda dentro da pasta `backend`:
+Na pasta `Avisaagua-api`, execute:
 
 ```bash
 npm run dev
 ```
 
-A API ficará disponível em:
+A API estará disponível em:
 
 ```text
 http://localhost:3000
 ```
 
-### 6. Iniciar o frontend
+### 5. Iniciar o frontend
 
-Abra outro terminal, volte à pasta principal do projeto e execute:
+Abra outro terminal e acesse a pasta `Avisaagua-ui`:
 
 ```bash
+cd Avisaagua-ui
+npm install
 npm run dev
 ```
 
-O frontend ficará disponível normalmente em:
+O frontend estará disponível normalmente em:
 
 ```text
 http://localhost:5173
 ```
 
-## Testes e verificações
+**Observação:** os comandos acima pressupõem que os repositórios foram clonados no mesmo diretório. Mantenha ambos os servidores em execução para utilizar o sistema.
 
-O backend possui um comando para verificar a conexão com o PostgreSQL:
+## Integração entre frontend e backend
 
-```bash
-cd backend
-npm run test:db
-```
+O frontend utiliza requisições HTTP para se comunicar com a API REST.
 
-Durante o desenvolvimento, foram realizados testes de consulta de avisos, órgãos, notificações, login, logout, envio de feedback e proteção de rotas com JWT.
+Durante o desenvolvimento local:
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:3000/api`
+
+As URLs estão configuradas para o ambiente local e precisarão ser ajustadas caso o sistema seja publicado na internet.
+
+## Testes realizados
+
+Durante o desenvolvimento, foram realizados testes de:
+
+- Conexão com PostgreSQL;
+- Consulta de avisos e órgãos públicos;
+- Consulta de notificações;
+- Autenticação JWT;
+- Login e logout;
+- Envio e armazenamento de feedbacks;
+- Proteção de rotas administrativas contra acessos de cidadãos.
+
+As operações com uma conta de administrador ainda precisam passar por testes específicos.
 
 ## Segurança
 
-A aplicação utiliza senhas armazenadas com hash bcrypt e autenticação por JWT.
+O backend utiliza bcrypt para armazenar hashes de senhas e JWT para autenticação.
 
-Existem dois perfis de usuário:
+Os perfis existentes são:
 
 - `CIDADAO`
 - `ADMINISTRADOR`
 
-As rotas administrativas verificam a autenticação e as permissões do usuário antes de permitir operações restritas.
+As operações administrativas são protegidas por verificações de autenticação e autorização realizadas na API.
 
 ## Situação do projeto
 
-O AvisaÁgua está em desenvolvimento acadêmico. As funcionalidades do cidadão foram integradas ao frontend e ao backend. A API também contempla operações administrativas, cuja interface poderá ser desenvolvida em uma próxima etapa.
+O AvisaÁgua está em desenvolvimento acadêmico. O frontend e o backend foram separados em repositórios GitHub independentes, conforme a organização solicitada para o Projeto Integrador II.
+
+A interface administrativa está planejada para uma etapa futura.
 
 ## Contexto acadêmico
 
