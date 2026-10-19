@@ -84,7 +84,7 @@ function DetalhesAviso() {
         ) : !aviso ? (
           <p>Aviso não encontrado.</p>
         ) : (
-          <article className="notice-card">
+          <article className="notice-card detalhes-aviso-card">
             <div className="notice-info">
               <h2>{aviso.titulo}</h2>
 
